@@ -1,9 +1,17 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from django.db.models import F
 from .models import ItemDescriptionModel, WeaponModel
+from .serializers import WeaponSerializer
 import json
+from rest_framework import generics
 
-class WeaponView(APIView):
-    def get(self, request):
-        return
+class MeleeWeaponView(generics.ListCreateAPIView):
+    queryset = WeaponModel.objects.filter(weapon_class = 'melee')
+    serializer_class = WeaponSerializer
+
+class MagicWeaponView(generics.ListCreateAPIView):
+    queryset = WeaponModel.objects.filter(weapon_class = 'magic')
+    serializer_class = WeaponSerializer
+
+class RangedWeaponView(generics.ListCreateAPIView):
+    queryset = WeaponModel.objects.filter(weapon_class = 'ranged')
+    serializer_class = WeaponSerializer
