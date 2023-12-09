@@ -1,7 +1,6 @@
 from django.db.models import F
 from .models import ItemDescriptionModel, WeaponModel
 from .serializers import WeaponSerializer
-import json
 from rest_framework import generics
 
 class MeleeWeaponView(generics.ListCreateAPIView):

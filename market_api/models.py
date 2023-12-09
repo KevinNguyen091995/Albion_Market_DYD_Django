@@ -20,6 +20,6 @@ class WeaponModel(models.Model):
     def get_description(self):
         try:
             item_description = ItemDescriptionModel.objects.get(unique_name=self.unique_name)
-            return item_description.item_name  # Change this to the attribute you want
+            return item_description.item_name
         except ItemDescriptionModel.DoesNotExist:
             return None
