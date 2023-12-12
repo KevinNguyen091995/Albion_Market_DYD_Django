@@ -8,7 +8,7 @@ class ItemDescriptionModel(models.Model):
         return self.unique_name
     
 class WeaponModel(models.Model):
-    unique_name = models.CharField(max_length=50)
+    unique_name = models.CharField(max_length=50, primary_key=True)
     tier = models.IntegerField()
     image_url = models.URLField(default=None)
     item_class = models.CharField(max_length=50)
