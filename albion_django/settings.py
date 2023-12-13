@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'market_api',
+    'market_prices',
 ]
 
 MIDDLEWARE = [
