@@ -8,6 +8,7 @@ class MarketPricesModel(models.Model):
     Tier = models.IntegerField()
     EnchantmentLevel = models.IntegerField()
     QualityLevel = models.IntegerField()
+    Location = models.CharField(max_length=100, default=None)
     last_updated = models.DateTimeField(auto_now=True)
 
 

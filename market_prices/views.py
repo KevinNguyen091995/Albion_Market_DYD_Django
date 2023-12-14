@@ -1,38 +1,56 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework import status, generics
 from .models import MarketPricesModel
 from .serializers import MarketPricesSerializer
 from datetime import datetime, timedelta
 from django.db.models import Max
 
-class MarketPricesView(ListAPIView):
+class MarketPricesDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MarketPricesModel.objects.all()
+    serializer_class = MarketPricesSerializer
+    lookup_field = 'ItemTypeId'
+class MarketPricesView(generics.ListAPIView):
     queryset = MarketPricesModel.objects.all()
     serializer_class = MarketPricesSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = MarketPricesSerializer(data=request.data)
+        # Try to get an existing record based on ItemTypeId
+        item_type_id = request.data.get('ItemTypeId')
+        existing_instance = MarketPricesModel.objects.filter(ItemTypeId=item_type_id).first()
 
-        if serializer.is_valid():
-            # Extract data from the serializer
-            new_unit_price = serializer.validated_data.get('UnitPriceSilver')
-            new_timestamp = serializer.validated_data.get('last_updated')
+        if existing_instance:
+            # If the record already exists, update it
+            serializer = MarketPricesSerializer(instance=existing_instance, data=request.data)
 
-            # Check if new_timestamp is not None and is over 1 hour older than the current time
-            current_time = datetime.now()
-            if new_timestamp and (new_timestamp >= current_time or new_timestamp <= current_time - timedelta(hours=1)):
-                # Check if the new_unit_price is less than what is currently in the database
-                current_max_unit_price = MarketPricesModel.objects.aggregate(Max('UnitPriceSilver'))['UnitPriceSilver__max']
-                if current_max_unit_price is not None and new_unit_price < current_max_unit_price:
-                    # Update the model
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if serializer.is_valid():
+                # Extract data from the serializer
+                new_unit_price = serializer.validated_data.get('UnitPriceSilver')
+                new_timestamp = serializer.validated_data.get('last_updated')
+
+                # Check if new_timestamp is not None and is over 1 hour older than the current time
+                current_time = datetime.now()
+                if new_timestamp and (new_timestamp <= current_time and new_timestamp >= current_time - timedelta(hours=1)):
+                    # Check if the new_unit_price is less than what is currently in the database
+                    current_max_unit_price = MarketPricesModel.objects.aggregate(Max('UnitPriceSilver'))['UnitPriceSilver__max']
+                    if current_max_unit_price is not None and new_unit_price < current_max_unit_price:
+                        # Update the existing model
+                        serializer.save()
+                        return Response(serializer.data, status=status.HTTP_200_OK)
+                    else:
+                        return Response({"error": "New unit price must be less than the current maximum unit price."}, status=status.HTTP_400_BAD_REQUEST)
+
                 else:
-                    return Response({"error": "New unit price must be less than the current maximum unit price."},
+                    return Response({"error": "New timestamp must be over 1 hour older than the current time."},
                                     status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({"error": "New timestamp must be over 1 hour older than the current time."},
-                                status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            # If the record doesn't exist, create a new one
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
