@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('market_api.urls')),
     path('', include('market_prices.urls')),
+    path('', include('guild_info.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # add this 

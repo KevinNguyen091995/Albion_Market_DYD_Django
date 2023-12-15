@@ -1,8 +1,11 @@
-from django.db.models import F
+import requests
+
 from .models import ItemDescriptionModel, WeaponModel, OffHandModel, MountModel
 from .serializers import WeaponSerializer, OffHandSerializer, MountSerializer
-import json
+
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 class AllWeaponView(generics.ListCreateAPIView):
     queryset = WeaponModel.objects.all()
@@ -31,3 +34,15 @@ class OffHandView(generics.ListCreateAPIView):
 class MountView(generics.ListCreateAPIView):
     queryset = MountModel.objects.filter(item_class = 'mount')
     serializer_class = MountSerializer
+
+class YourApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        guild_id = "QLY0eIvEQNa3WJZ_tndijg"
+        url = f"https://gameinfo.albiononline.com/api/gameinfo/guilds/{guild_id}/data"
+
+        # Make the API call
+        response = requests.get(url)
+
+        # Process the response
+        data = response.json() if response.status_code == 200 else {}
+        return Response(data)

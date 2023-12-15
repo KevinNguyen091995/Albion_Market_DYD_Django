@@ -3,3 +3,4 @@ django-cors-headers==4.3.1
 Django==4.2.8
 python-decouple
 gunicorn
+requests
