@@ -4,3 +4,4 @@ Django==4.2.8
 python-decouple
 gunicorn
 requests
+psycopg2

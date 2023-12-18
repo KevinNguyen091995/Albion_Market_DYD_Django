@@ -3,6 +3,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    path('api/all/', AllItemView.as_view()),
     path('api/detail/<str:unique_name>', ItemDetailView.as_view()),
     path('api/weapons/', AllWeaponView.as_view()),
     path('api/weapons/melee/', MeleeView.as_view()),
