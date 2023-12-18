@@ -1,48 +1,58 @@
 import requests
-
-from .models import ItemDescriptionModel, WeaponModel, OffHandModel, MountModel
-from .serializers import WeaponSerializer, OffHandSerializer, MountSerializer
-
+from .models import ItemModel
+from .serializers import ItemSerializer
 from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 class AllWeaponView(generics.ListCreateAPIView):
-    queryset = WeaponModel.objects.all()
-    serializer_class = WeaponSerializer
-class MeleeWeaponView(generics.ListCreateAPIView):
-    queryset = WeaponModel.objects.filter(item_class = 'melee')
-    serializer_class = WeaponSerializer
-    
-class MagicWeaponView(generics.ListCreateAPIView):
-    queryset = WeaponModel.objects.filter(item_class = 'magic')
-    serializer_class = WeaponSerializer
+    queryset = ItemModel.objects.all()
+    serializer_class = ItemSerializer
 
-class RangedWeaponView(generics.ListCreateAPIView):
-    queryset = WeaponModel.objects.filter(item_class = 'ranged')
-    serializer_class = WeaponSerializer
-
-class WeaponDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = WeaponModel.objects.all()
-    serializer_class = WeaponSerializer
+class ItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ItemModel.objects.all()
+    serializer_class = ItemSerializer
     lookup_field = 'unique_name'
 
-class OffHandView(generics.ListCreateAPIView):
-    queryset = OffHandModel.objects.filter(item_class = 'offhand')
-    serializer_class = OffHandSerializer
+class MeleeView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'melee')
+    serializer_class = ItemSerializer
+    
+class MagicView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'magic')
+    serializer_class = ItemSerializer
+
+class RangedView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'ranged')
+    serializer_class = ItemSerializer
+
+class EquipmentView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'offhand')
+    serializer_class = ItemSerializer
 
 class MountView(generics.ListCreateAPIView):
-    queryset = MountModel.objects.filter(item_class = 'mount')
-    serializer_class = MountSerializer
+    queryset = ItemModel.objects.filter(item_class = 'mounts')
+    serializer_class = ItemSerializer
 
-class YourApiView(APIView):
-    def get(self, request, *args, **kwargs):
-        guild_id = "QLY0eIvEQNa3WJZ_tndijg"
-        url = f"https://gameinfo.albiononline.com/api/gameinfo/guilds/{guild_id}/data"
+class ResourceView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'resources')
+    serializer_class = ItemSerializer
 
-        # Make the API call
-        response = requests.get(url)
+class ConsumeableView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'consumables')
+    serializer_class = ItemSerializer
 
-        # Process the response
-        data = response.json() if response.status_code == 200 else {}
-        return Response(data)
+class SkillBookView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'skillbooks')
+    serializer_class = ItemSerializer
+
+class AccessoryView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'accessories')
+    serializer_class = ItemSerializer
+
+class ArmorView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'armor')
+    serializer_class = ItemSerializer
+
+class ToolView(generics.ListCreateAPIView):
+    queryset = ItemModel.objects.filter(item_class = 'tools')
+    serializer_class = ItemSerializer
+
