@@ -11,4 +11,4 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ItemModel
-        fields = ['unique_name', 'item_name', 'tier', 'image_url', 'item_class', 'item_category']
+        fields = ['unique_name', 'item_name', 'tier', 'image_url', 'item_class', 'item_category', 'item_sub_category']
