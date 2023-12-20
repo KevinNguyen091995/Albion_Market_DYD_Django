@@ -6,10 +6,19 @@ from .serializers import MarketPricesSerializer
 from datetime import datetime, timedelta
 from django.db.models import Max
 
-class MarketPricesDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = MarketPricesModel.objects.all()
+class MarketPricesListView(generics.ListAPIView):
     serializer_class = MarketPricesSerializer
-    lookup_field = 'ItemTypeId'
+
+    def get_queryset(self):
+        # Get the 'ItemTypeId' from the URL parameter
+        item_type_id = self.kwargs.get('ItemTypeId', None)
+
+        # Filter the queryset based on the 'ItemTypeId'
+        if item_type_id is not None:
+            return MarketPricesModel.objects.filter(ItemTypeId=item_type_id)
+        
+        else:
+            return MarketPricesModel.objects.all()
 
 class MarketPricesView(generics.ListAPIView):
     queryset = MarketPricesModel.objects.all()
