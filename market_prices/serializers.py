@@ -5,4 +5,4 @@ from .models import MarketPricesModel
 class MarketPricesSerializer(serializers.ModelSerializer):
     class Meta:
         model = MarketPricesModel
-        fields = ['ItemTypeId', 'ItemGroupTypeId', 'Tier', 'EnchantmentLevel', 'QualityLevel', 'Location', 'last_updated']
+        fields = ['ItemTypeId', 'ItemGroupTypeId', 'Tier', 'EnchantmentLevel', 'QualityLevel', 'Location', 'UnitPriceSilver', 'last_updated']
